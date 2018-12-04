@@ -1,9 +1,15 @@
-import {Component, Input} from '@angular/core';
-import {CalendarDay} from '../calendar.model';
-import {Meal} from '../../../../models/meal.module';
-import {MealService} from '../../../../services/meal.service';
+import {Component, EventEmitter, Input, Output, OnInit} from '@angular/core';
+import {CalendarDay, Day} from '../calendar.model';
+import {Workout} from '../../workout/workout.model';
+import { WorkoutService } from '../../workout/workout.service';
+import { DayService } from './day.service';
+import { LoginService } from '../../../../services/login.service';
+import * as moment from 'moment';
+
+declare var $: any;
 
 @Component({
+  moduleId: module.id,
   selector: 'calendar-day',
   templateUrl: './day.html',
   styles: [`
@@ -11,33 +17,47 @@ import {MealService} from '../../../../services/meal.service';
       opacity: .25;
       height: 0;
       padding-bottom: 100%;
+      width: 100%;
     }
     .day.valid-month {
       opacity: 1;
     }
+    .workout {
+      margin: 5px;
+    }
     .breakfast, .lunch, .dinner, .snack { }
   `]
 })
-export class DayComponent {
+export class DayComponent implements OnInit {
   @Input() day: CalendarDay;
-  @Input() meals: [Meal];
+  @Output() showWorkout: EventEmitter<any> = new EventEmitter<any>();
+  @Output() updateWorkouts: EventEmitter<any> = new EventEmitter<any>();
 
-  constructor(private mealService: MealService) { }
+  workouts: Array<Workout> = new Array<Workout>();
 
-  showMeal() { }
-  getMealDisplay(meal: Meal) {
-    return this.mealService.getMealDisplay(meal);
+  constructor(private workoutService: WorkoutService, private dayService: DayService, private loginService: LoginService) {}
+
+  ngOnInit() {
+    this.dayService.getWorkoutsForDay(this.loginService.getUser()._id, moment(this.day.date).format('LL')).subscribe(result => {
+      let res: Array<Day>;
+      res = result as [Day];
+      res.forEach((r, idx, arr) => {
+        this.workoutService.get(r.workout).subscribe(ws => {
+          let w: Workout = ws as Workout;
+          if (w) {
+            w.cal = r._id;
+            this.workouts.push(w);
+          }
+        });
+      });
+    });
   }
-  isBreakFast(meal: Meal): boolean {
-    return this.mealService.isBreakFast(meal);
+
+  showWorkoutModal(workout: Workout) {
+    var obj = {workout: workout, day: workout.cal};
+    this.showWorkout.emit(obj);
+    this.updateWorkouts.emit(this.workouts);
   }
-  isLunch(meal: Meal): boolean {
-    return this.mealService.isLunch(meal);
-  }
-  isDinner(meal: Meal): boolean {
-    return this.mealService.isDinner(meal);
-  }
-  isSnack(meal: Meal): boolean {
-    return this.mealService.isSnack(meal);
-  }
+  
+  
 }

@@ -1,1 +1,24 @@
-HERE is my signup page
+<h2 class="text-center">
+    Welcome!
+    <h2>
+        <br>
+        <form [formGroup]="signUp" (ngSubmit)="onSubmit()">
+            <div class="row">
+                <div class="col ml-5">
+                    <input id="emailInput" formControlName="email" type="email" class="form-control" placeholder="Username, please use a valid Email address." required>
+                </div>
+            </div>
+            <br>
+            <div class="row">
+                <div class="col ml-5">
+                    <input id="pwInput" formControlName="pWord" type="password" class="form-control" placeholder="Password" required>
+                </div>
+                <div class="col mr-5">
+                    <input id="vpwInput" formControlName="vPWord" type="password" class="form-control" placeholder="Verify Password" required>
+                </div>
+            </div>
+            <br>
+            <div class="col-md-12 text-center">
+                <button id="singlebutton" name="singlebutton" class="btn btn-primary" type="submit">Sign Me Up!</button>
+            </div>
+        </form>

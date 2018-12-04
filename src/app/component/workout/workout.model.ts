@@ -3,12 +3,18 @@ import {Exercise} from '../exercise/exercise.model'
 
 
 export class Workout {
-    id: string;
+    _id: string;
     name: string;
     description: string;
-    exercises: Array<Exercise>;
-    owner: string;
-    expanded: false;
-    edit_delete: true;
-    
+    exercises: Exercise[];
+    owner: string; 
+    color: string;
+    sharedWith: Shared[];
+    isShared: boolean = false;
+    cal: string;
+}
+
+export class Shared {
+    id: string
+    username: string;
 }

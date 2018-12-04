@@ -1,7 +1,11 @@
 <form class="well">
-    <div class="form-group">
-      <input type="text"  name="title" class="form-control" placeholder="Add Excercise...">    
-    </div>  
+    <div class="form-inline" style="margin-top: 10px;" *ngIf="workout.owner == currentUser._id">
+        <input type="text" name="title" class="form-control" placeholder="Add Excercise..." style="width:80%; float: right;"
+            id="add_exercise_name" [(ngModel)]="newExerciseName">
+        <button type="button" class="btn btn-primary" (click)="add()" style="margin-left: 10px; margin-right: 10px; float: left;">
+            <fa name="plus"></fa>
+        </button>
+    </div>
 </form>
 
 <div class="exercise-list">
@@ -9,34 +13,42 @@
         <thead>
             <tr>
                 <td>Name</td>
-                <td>description</td>
+                <td>Description</td>
                 <td>Sets</td>
                 <td>Reps</td>
                 <td></td>
-                <td></td>
-                
             </tr>
         </thead>
-        
-    
-  <tbody *ngFor="let exercise of exercises">
-      <tr>
-          <td><input [ngClass]="!exercise.edit_delete? 'exercise-text-input': ''" type="text" value={{exercise.name}} [disabled]="!exercise.edit_delete"></td>
-          <td><input [ngClass]="!exercise.edit_delete? 'exercise-text-input': ''" type="text" value={{exercise.description}} [disabled]="!exercise.edit_delete"></td>
-          <td><input [ngClass]="!exercise.edit_delete? 'exercise-text-input': ''" type="text" value={{exercise.sets}} [disabled]="!exercise.edit_delete"></td>
-          <td><input [ngClass]="!exercise.edit_delete? 'exercise-text-input': ''" type="text" value={{exercise.reps}} [disabled]="!exercise.edit_delete"></td>
-          
-          <td>
-              <input type="button" value="Edit" class="btn btn-primary" (click)="exercise.edit_delete = !exercise.edit_delete" *ngIf="!exercise.edit_delete">
-              <input type="button" value="Save" class="btn btn-primary" (click)="exercise.edit_delete = !exercise.edit_delete" *ngIf="exercise.edit_delete">
-          </td>
-          <td>
-                <input type="button" value="Delete" class="btn btn-danger" (click)="exercise.edit_delete = !exercise.edit_delete" *ngIf="!exercise.edit_delete">
-                <input type="button" value="Cancel" class="btn btn-primary" (click)="exercise.edit_delete = !exercise.edit_delete" *ngIf="exercise.edit_delete">
-          </td>
-      </tr>
-      
 
-    </tbody>
+        <tbody *ngFor="let exercise of workout.exercises; let idx = index">
+            <tr>
+                <td><input id="{{'e_name_' + exercise._id}}" class="exercise-text-input" type="text" value={{exercise.name}}
+                        [disabled]="true" [(ngModel)]="exercise.name"></td>
+                <td><input id="{{'e_desc_' + exercise._id}}" class="exercise-text-input" type="text" value={{exercise.description}}
+                        [disabled]="true" [(ngModel)]="exercise.description"></td>
+                <td><input id="{{'e_sets_' + exercise._id}}" class="exercise-text-input" type="number" value={{exercise.sets}}
+                        [disabled]="true" [(ngModel)]="exercise.sets"></td>
+                <td><input id="{{'e_reps_' + exercise._id}}" class="exercise-text-input" type="number" value={{exercise.reps}}
+                        [disabled]="true" [(ngModel)]="exercise.reps"></td>
+
+
+                <td id="{{'e_edit_delete_' + exercise._id}}" *ngIf="workout.owner == currentUser._id">
+                    <button type="button" title="Edit" class="btn btn-primary" (click)="edit(exercise)">
+                        <fa name="edit"></fa>
+                    </button>
+                    <button type="button" title="Delete" class="btn btn-danger" (click)="delete(exercise)" style="margin-left: 10px;">
+                        <fa name="trash"></fa>
+                    </button>
+                </td>
+                <td id="{{'e_save_cancel_' + exercise._id}}" class="workout-hidden" *ngIf="workout.owner == currentUser._id">
+                    <button type="button" title="Save" class="btn btn-primary" (click)="save(exercise)">
+                        <fa name="save"></fa>
+                    </button>
+                    <button type="button" title="Cancel" class="btn btn-secondary" (click)="cancel(exercise)" style="margin-left: 10px;">
+                        <fa name="times"></fa>
+                    </button>
+                </td>
+            </tr>
+        </tbody>
     </table>
 </div>

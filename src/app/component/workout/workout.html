@@ -19,19 +19,134 @@
         <h4 style="margin-left: 10px;"><label *ngIf="workout.edit_delete" style="margin-right: 5px;">Description: </label><input [ngClass]="!workout.edit_delete? 'exercise-text-input': ''" type="text" value={{workout.description}} [disabled]="!workout.edit_delete" style="margin-top: 5px;"></h4>
         <div class="workout-excercise-list" style="margin-left: 10px;">
             <exercise [exercises]=workout.exercises></exercise>
-        </div>
-      </div>
 
-      <div class="panel-footer bg-light text-white" *ngIf="workout.expanded" style="padding: 10px;">
-          <div *ngIf="!workout.edit_delete">
-                <input type="button" value="Edit" class="btn btn-primary" (click)="workout.edit_delete = !workout.edit_delete">    
-                <input type="button" value="Delete" class="btn btn-danger" style="margin-left: 10px;">    
-          </div>
-          <div *ngIf="workout.edit_delete">
-                <input type="button" value="Save" class="btn btn-primary" (click)="workout.edit_delete = !workout.edit_delete">    
-                <input type="button" value="Cancel" class="btn btn-primary" (click)="workout.edit_delete = !workout.edit_delete" style="margin-left: 10px;">   
-          </div>
-      </div>
-  </div>
-</div>
+        </div>
+
+        <div class="workout-list">
+            <div *ngFor="let workout of workouts;" style="margin-top: 25px;">
+                <div class="panel panel-default" id="{{'w_collapse' + workout._id}}">
+
+                    <a data-toggle="collapse" href="{{'#collapse_' + workout._id}}" style="cursor: pointer;" role="button"
+                        aria-expanded="true" id="{{'w_collapse_' + workout._id}}">
+
+                        <div [ngStyle]="{'background-color': workout.color}" class="panel-heading text-white form-inline">
+
+                            <h1 style="margin-left: 10px;">
+                                <label id="{{'w_label_' + workout._id}}">{{workout.name}}</label>
+                            </h1>
+                        </div>
+                    </a>
+
+                    <div class="collapse" [class.show]="workoutId" id="{{'collapse_' + workout._id}}">
+                        <div class="form-inline">
+                            <h2 style="margin-left: 10px;">
+                                <label id="{{'w_label1_' + workout._id}}" style="margin-right: 5px;" class="workout-hidden">Name:
+                                </label>
+                                <input id="{{'w_name_' + workout._id}}" class="exercise-text-input" type="text" value={{workout.name}}
+                                    [disabled]="true" style="margin-top: 5px; margin-bottom: 5px;" [(ngModel)]="workout.name"
+                                    [ngModelOptions]="{standalone: true}">
+                            </h2>
+
+                            <div id="{{'w_color_' + workout._id}}" class="workout-hidden" style="margin-left: 40px;">
+                                <label>Color:
+                                    <input type="button" value="" class="btn" style="background-color: #6c086d; margin-left: 5px; width:20px; height: 20px;"
+                                        (click)="updateColor(workout, '#6c086d')" [disabled]="workout.isShared">
+                                    <input type="button" value="" class="btn" style="background-color: #1d61ae; margin-left: 5px; width:20px; height: 20px;"
+                                        (click)="updateColor(workout, '#1d61ae')" [disabled]="workout.isShared">
+                                    <input type="button" value="" class="btn" style="background-color: #319a2d; margin-left: 5px; width:20px; height: 20px;"
+                                        (click)="updateColor(workout, '#319a2d')" [disabled]="workout.isShared">
+                                    <input type="button" value="" class="btn" style="background-color: #c91010; margin-left: 5px; width:20px; height: 20px;"
+                                        (click)="updateColor(workout, '#c91010')" [disabled]="workout.isShared">
+                                    <input type="button" value="" class="btn" style="background-color: #f2d042; margin-left: 5px; width:20px; height: 20px;"
+                                        (click)="updateColor(workout, '#f2d042')" [disabled]="workout.isShared">
+                                    <input type="button" value="" class="btn" style="background-color: #37454E; margin-left: 5px; width:20px; height: 20px;"
+                                        (click)="updateColor(workout, '#37454E')" [disabled]="workout.isShared">
+                                    <input type="button" value="" class="btn" style="background-color: #E3879E; margin-left: 5px; width:20px; height: 20px;"
+                                        (click)="updateColor(workout, '#E3879E')" [disabled]="workout.isShared">
+                                </label>
+                            </div>
+                            <!--
+                                #E3879E
+                                    <input type="color" list="presetColors" id="{{'w_color_' + workout._id}}" (change)="updateColor(workout, $event)" class="hidden"
+                                     value="{{workout.color}}" style="margin-left: 20px;">
+                                    <datalist id="presetColors">
+                                        <option value="#6c086d" style="background-color: #6c086d;"></option>/>
+                                        <option value="#1d61ae" style="background-color: #1d61ae;"></option>/>
+                                        <option value="#319a2d" style="background-color: #319a2d;"></option>/>
+                                        <option value="#c91010" style="background-color: #c91010;"></option>/>
+                                        <option value="#2d042" style="background-color: #f2d042;"></option>/>
+                                        <option value="#818181" style="background-color: #818181;"></option>/>
+                                    </datalist>
+                                    -->
+                        </div>
+                        <div class="panel-body bg-light">
+
+                            <h4 style="margin-left: 10px;">
+                                <label id="{{'w_label2_' + workout._id}}" style="margin-right: 5px;" class="workout-hidden">Description:
+                                </label>
+                                <input id="{{'w_desc_' + workout._id}}" class="exercise-text-input" type="text" value={{workout.description}}
+                                    [disabled]="true" style="margin-top: 5px;" [(ngModel)]="workout.description"
+                                    [ngModelOptions]="{standalone: true}">
+                            </h4>
+                            <div class="workout-excercise-list" style="margin-left: 10px;">
+                                <exercise [workout]=workout></exercise>
+                            </div>
+                        </div>
+
+                        <div class="panel-footer bg-light text-white" style="overflow: auto; padding: 10px;">
+                            <div class="clear-fix">
+                                <div id="{{'w_edit_delete_' + workout._id}}" class="float-left" *ngIf="workout.owner == currentUser._id">
+                                    <button type="button" title="Edit Workout" class="btn btn-primary" (click)="edit(workout)">
+                                        <fa name="edit"></fa>
+                                    </button>
+                                    <button type="button" title="Delete Workout" class="btn btn-danger" style="margin-left: 10px;"
+                                        (click)="delete(workout)">
+                                        <fa name="trash"></fa>
+                                    </button>
+                                </div>
+                                <div id="{{'w_save_cancel_' + workout._id}}" class="workout-hidden float-left" *ngIf="workout.owner == currentUser._id">
+                                    <button type="button" title="Save Change" class="btn btn-primary" (click)="save(workout)">
+                                        <fa name="save"></fa>
+                                    </button>
+                                    <button type="button" title="Cancel Change" class="btn btn-secondary" (click)="cancel(workout)"
+                                        style="margin-left: 10px;">
+                                        <fa name="times"></fa>
+                                    </button>
+                                </div>
+                                <div class="float-right">
+                                    <button type="button" title="Clone Workout" class="btn btn-primary float-right" (click)="clone(workout)"
+                                        style="margin-left: 10px;">
+                                        <fa name="copy"></fa>
+                                    </button>
+                                    <button type="button" title="Share Workout" class="btn btn-primary float-right" (click)="showShareModal(workout)"
+                                        style="margin-left: 10px;" *ngIf="!workout.isShared">
+                                        <fa name="share-square"></fa>
+
+                                    </button>
+                                    <button type="button" class="btn btn-primary float-right" title="View Owner Profile"
+                                        (click)="viewUserProfile(workout.owner)" *ngIf="workout.isShared" style="margin-left: 10px;">
+                                        <fa name="user"></fa>
+                                    </button>
+
+                                    <button type="button" title="Add to calendar" class="btn btn-primary float-right"
+                                        (click)="showCalModal(workout)">
+                                        <fa name="calendar"></fa>
+                                    </button>
+
+                                    
+                                </div>
+                            </div>
+                        </div>
+                        <br>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <workout-share-modal [workout]="workout" [user]="currentUser" [friends]="friends" (refresh)="refreshWorkout(workout?._id)"></workout-share-modal>
+        <workout-cal-modal [workout]="workout"></workout-cal-modal>
+
+    </form>
 </div>

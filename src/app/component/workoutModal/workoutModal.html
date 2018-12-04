@@ -1,0 +1,43 @@
+<div id="workout-modal" class="modal" tabindex="-1" role="dialog">"{{'w_label2_' + workout?._id}}"
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header" [ngStyle]="{'background-color': workout?.color}">
+        <h2 class="modal-title text-white">{{workout?.name}}</h2>
+        <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class='card-body bg-light'>
+          <table class='table'>
+            <thead>
+            <tr>
+              <th>Exercise</th>
+              <th>Sets X Reps</th>
+              <th>Weight</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let exercise of workout?.exercises">
+              <td>{{exercise?.name}}</td>
+              <td>{{exercise?.sets}} X {{exercise?.reps}}</td>
+              <td>lbs: <input id="{{'e_w_' + exercise._id}}" type="number" value="{{getWeight(exercise)}}" (change)="updateWeight(exercise)"> </td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <p>{{workout?.description}}</p>
+      </div>
+      <div class="modal-footer">
+        
+        <button type="button" class="btn btn-primary" (click)="view()" data-dismiss="modal"><fa name="eye"></fa></button>
+        
+        <button type="button" value="Delete" class="btn btn-danger" style="margin-left: 10px;" data-dismiss="modal"
+                                        (click)="delete()">
+                                        <fa name="trash"></fa>
+                                    </button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal"><fa name="times"></fa></button>
+      </div>
+    </div>
+  </div>
+</div>

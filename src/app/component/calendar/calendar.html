@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col"><h1>{{month.name}} {{month.year}}</h1></div>
   <div class="col">
-    <button type="button" class="btn btn-primary pull-right" (click)="toggleToday()">Today</button>
+    <button type="button" class="btn btn-primary pull-right" (click)="toggleToday()" style="margin-left: 15px;">Today</button>
     <div class="btn-group pull-right">
       <button type="button" class="btn btn-primary" (click)="goBackMonth()"><</button>
       <button type="button" class="btn btn-primary" (click)="goNextMonth()">></button>
@@ -12,15 +12,16 @@
   <table class="table table-bordered">
     <thead>
     <tr>
-      <th scope="col" *ngFor="let day of daysOfWeek">{{day}}</th>
+      <th scope="col" *ngFor="let day of daysOfWeek" style="width:calc(100%/7);">{{day}}</th>
     </tr>
     </thead>
     <tbody>
     <tr *ngFor="let week of month.weeks;">
-      <td *ngFor="let day of week.days">
-        <calendar-day [day]="day" [meals]="getMeal(day)"></calendar-day>
+      <td *ngFor="let day of week.days" style="overflow: hidden;padding:0;">
+        <calendar-day [day]="day"  (showWorkout)="showWorkout($event)" (updateWorkouts)="updateWorkouts($event)"></calendar-day>
       </td>
     </tr>
     </tbody>
   </table>
 </div>
+<workout-modal [workout]="workout" (deleteWorkout)="deleteWorkoutForDay($event)" [dayId]="dayId"></workout-modal>
